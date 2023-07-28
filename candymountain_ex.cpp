@@ -28,6 +28,7 @@ build(low, mid, index*2+1, v);
 
 build(mid+1, high, index*2+2, v);
 
+tree[index] = min(tree[index*2+1], tree[index*2+2]);
 }
 
 long long IT_MAX = 1e10;
@@ -57,12 +58,26 @@ ll mid = (high + low)/2;
 long long left = query(l, r, low, mid, index*2+1, v);
 //long long right = 1e10;
 ll right = query(l, r, mid+1, high, index*2+2, v);
-tree[index] = min(left, right);
+//tree[index] = min(left, right);
 return min(left, right);
 
 }
-
-
+void update(int p, int v, int low, int high, int index)
+{
+	if(p < low || p > high)
+	{
+		return;
+	}
+	else if(p == low && low == high)
+	{
+		tree[index] = v;
+		return;
+	}
+	int mid = (low + high)/2;
+	update(p, v, low, mid, index*2+1);
+	update(p, v, mid+1, high, index*2+2);
+	tree[index] = min(tree[index*2+1], tree[index*2+2]);
+}
 int main()
 
 {
@@ -91,7 +106,7 @@ v.push_back(a);
 
 //cout<<"k";
 
-build(1, n, 0, v);
+build(0, n, 0, v);
 
 dp[0] = 0;
 
@@ -103,16 +118,17 @@ for(int i = 1; i <= n; i++)
 
 {
 
-long long temp = query(max(1, i-k), i, 1, n, 0, v);
-cout<<"i-k: "<<i-k<<endl;
-cout<<"max: "<<max(1, i-k)<<endl;
+long long temp = query(max(0, i-k), i-1, 0, n, 0, v);
+//cout<<"i-k: "<<i-k<<endl;
+//cout<<"max: "<<max(1, i-k)<<endl;
 //cout<<"i: "<<i<<endl;
-cout<<"query: "<<query(max(1, i- k), i, 1, n, 0, v)<<endl;
+//cout<<"query: "<<query(max(0, i- k), i-1, 0, n, 0, v)<<endl;
 dp[i] = max(v[i], temp);
+update(i, dp[i], 0, n, 0);
 
 //cout<<temp<<endl;
 
-cout<<"dp[i]: "<<dp[i]<<"i: "<<i<<endl;
+//cout<<"dp[i]: "<<dp[i]<<"i: "<<i<<endl;
 
 }
 
